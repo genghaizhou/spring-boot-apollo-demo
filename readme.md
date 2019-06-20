@@ -3,7 +3,7 @@
 日志配置动态修改
 
 ### 一、初始化器
-####`1. com/demo/config/ApolloEnvInitializer.java`
+**`1. com/demo/config/ApolloEnvInitializer.java`**
 
 根据`application.yml`
 ```
@@ -13,7 +13,7 @@ apollo:
 设置`apollo`需要的的系统环境变量`env`，可用启动参数`-Denv=pro`代替
 <br/><br/> 
     
-####`2. com/demo/config/LoggingReInitializer.java`
+**`2. com/demo/config/LoggingReInitializer.java`**
 
 拉取`apollo`配置后, 重新初始化日志
 
@@ -21,7 +21,7 @@ apollo:
 <br/> <br/> 
 
 ###  二、配置监听器
-####`com/demo/component/ApolloChangeListener.java`
+**`com/demo/component/ApolloChangeListener.java`**
     
 监听`apollo`发布的配置变化，刷新bean，根据关键字`log.file`进行日志重新初始化
 <br/> <br/> 
@@ -35,4 +35,13 @@ public static void main(String[] args) {
     application.run(args);
 }
 ```
-    
+
+### `Apollo`远端配置
+```
+log:
+  console-level: info
+  file:
+    dir: /usr/logs
+    max-history: 1
+    debug-enabled: false
+```
