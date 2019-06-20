@@ -1,0 +1,13 @@
+# 项目环境配置
+profile-env: ${profile-env}
+
+# apollo
+app:
+  id: ${project.name}
+
+apollo:
+  env: pro
+  meta: http://127.0.0.1:18080
+  bootstrap:
+    enabled: true
+    namespaces: application.yml

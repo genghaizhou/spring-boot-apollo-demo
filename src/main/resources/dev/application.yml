@@ -1,0 +1,10 @@
+# 项目环境配置
+profile-env: ${profile-env}
+
+# 日志配置
+log:
+  console-level: info
+  file:
+    dir: logs
+    max-history: 1
+    debug-enabled: false

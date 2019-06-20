@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+关闭调试信息
+自动扫描配置改动, 默认每16/pointcut, 30秒延迟
+ -->
+<configuration debug="false" scan="false" scanPeriod="30 seconds">
+
+    <springProperty name="ENV" source="profile-env" defaultValue="dev"/>
+    <springProperty name="CONSOLE_LEVEL" source="log.console-level" defaultValue="info"/>
+    <springProperty name="LOG_HOME" source="log.file.dir" defaultValue=""/>
+    <springProperty name="MAX_HISTORY" source="log.file.max-history" defaultValue="30"/>
+    <springProperty name="DEBUG_ENABLED" source="log.file.debug-enabled" defaultValue="false"/>
+
+    <!-- 控制台输出 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度 %line行号 %msg：日志消息，%n是换行符-->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{5}.%line - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${CONSOLE_LEVEL}</level>
+        </filter>
+    </appender>
+
+    <!-- 本地不输出日志 -->
+    <if condition='"${ENV}"!="dev" &amp; "${LOG_HOME}"!=""'>
+        <then>
+            <!--按照每天生成日志文件 -->
+            <appender name="INFO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+                <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                    <!--日志文件输出的文件名-->
+                    <FileNamePattern>${LOG_HOME}/info.log.%d{yyyy-MM-dd}</FileNamePattern>
+                    <!--日志文件保留天数-->
+                    <maxHistory>${MAX_HISTORY}</maxHistory>
+                    <cleanHistoryOnStart>true</cleanHistoryOnStart>
+                    <!--<historyAsFileCount>true</historyAsFileCount>-->
+                </rollingPolicy>
+                <encoder>
+                    <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+                    <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{5}.%line - %msg%n</pattern>
+                </encoder>
+                <filter class="ch.qos.logback.classic.filter.LevelFilter">
+                    <level>INFO</level>
+                    <onMatch>ACCEPT</onMatch>
+                    <onMismatch>DENY</onMismatch>
+                </filter>
+            </appender>
+
+            <!-- 按照每天生成日志文件 -->
+            <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+                <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                    <!--日志文件输出的文件名-->
+                    <FileNamePattern>${LOG_HOME}/error.log.%d{yyyy-MM-dd}</FileNamePattern>
+                    <!--日志文件保留天数-->
+                    <maxHistory>${MAX_HISTORY}</maxHistory>
+                    <cleanHistoryOnStart>true</cleanHistoryOnStart>
+                </rollingPolicy>
+                <encoder>
+                    <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+                    <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{5}.%line - %msg%n</pattern>
+                </encoder>
+                <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                    <level>WARN</level>
+                </filter>
+            </appender>
+
+            <root>
+                <appender-ref ref="INFO_FILE"/>
+                <appender-ref ref="ERROR_FILE"/>
+            </root>
+        </then>
+    </if>
+
+    <!-- 输出debug日志 -->
+    <if condition='"${DEBUG_ENABLED}"=="true"'>
+        <then>
+            <appender name="DEBUG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+                <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                    <!--日志文件输出的文件名-->
+                    <FileNamePattern>${LOG_HOME}/debug.log.%d{yyyy-MM-dd}</FileNamePattern>
+                    <!--日志文件保留天数-->
+                    <maxHistory>1</maxHistory>
+                    <cleanHistoryOnStart>true</cleanHistoryOnStart>
+                </rollingPolicy>
+                <encoder>
+                    <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+                    <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{5}.%line - %msg%n</pattern>
+                </encoder>
+                <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                    <level>DEBUG</level>
+                </filter>
+            </appender>
+            <root>
+                <appender-ref ref="DEBUG_FILE"/>
+            </root>
+        </then>
+    </if>
+
+    <root>
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>
